@@ -2712,16 +2712,16 @@ class TwitterTimeLimitService {
         return
       }
 
-      // Find the index of the last seen tweet
+      
       const lastSeenIndex = tweetIds.indexOf(notifications.lastSeenTweetId)
       
       let newTweetIds = []
       if (lastSeenIndex === -1) {
-        // If last seen tweet is not found, all tweets are new
+        
         newTweetIds = [...tweetIds]
         console.log('Last seen tweet not found in current batch - treating all as new')
       } else {
-        // Get all tweets that come after the last seen tweet
+        
         newTweetIds = tweetIds.slice(lastSeenIndex + 1)
         console.log('Found last seen tweet at index:', lastSeenIndex, 'getting tweets after it')
       }
@@ -2779,7 +2779,7 @@ class TwitterTimeLimitService {
               )
 
               if (newTweet.created_at) {
-                // Parse Twitter's UTC timestamp correctly
+                
                 const tweetCreatedAt = new Date(newTweet.created_at)
                 const now = new Date()
                 const nowUTC = new Date(now.getTime())
@@ -2803,7 +2803,7 @@ class TwitterTimeLimitService {
               console.log('Tweet filtered out or already processed - not showing notification for:', tweetId)
 
               if (newTweet.created_at) {
-                // Parse Twitter's UTC timestamp correctly
+                
                 const tweetCreatedAt = new Date(newTweet.created_at)
                 const now = new Date()
                 const nowUTC = new Date(now.getTime())
@@ -2925,11 +2925,11 @@ class TwitterTimeLimitService {
   shouldNotifyForTweet(tweet, filterType) {
     const isRetweet = tweet.full_text && tweet.full_text.startsWith('RT @')
 
-    // Parse Twitter's UTC timestamp correctly
+    
     const tweetCreatedAt = new Date(tweet.created_at)
     const now = new Date()
     
-    // Ensure we're comparing UTC times correctly
+    
     const nowUTC = new Date(now.getTime())
     const tweetUTC = new Date(tweetCreatedAt.getTime())
     
