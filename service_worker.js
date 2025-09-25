@@ -2712,15 +2712,25 @@ class TwitterTimeLimitService {
         return
       }
 
-      const newTweetIds = []
-      for (const tweetId of tweetIds) {
-        if (tweetId === notifications.lastSeenTweetId) {
-          break
-        }
-        newTweetIds.push(tweetId)
+      // Find the index of the last seen tweet
+      const lastSeenIndex = tweetIds.indexOf(notifications.lastSeenTweetId)
+      
+      let newTweetIds = []
+      if (lastSeenIndex === -1) {
+        // If last seen tweet is not found, all tweets are new
+        newTweetIds = [...tweetIds]
+        console.log('Last seen tweet not found in current batch - treating all as new')
+      } else {
+        // Get all tweets that come after the last seen tweet
+        newTweetIds = tweetIds.slice(lastSeenIndex + 1)
+        console.log('Found last seen tweet at index:', lastSeenIndex, 'getting tweets after it')
       }
 
       console.log('Found', newTweetIds.length, 'new tweets since last check')
+      console.log('New tweet IDs:', newTweetIds)
+      console.log('Last seen tweet ID:', notifications.lastSeenTweetId)
+      console.log('All tweet IDs from API:', tweetIds)
+      
       if (newTweetIds.length > 0) {
         const trulyNewTweetIds = newTweetIds.filter(
           (tweetId) => !notifications.processedTweetIds.includes(tweetId)
@@ -2730,6 +2740,8 @@ class TwitterTimeLimitService {
           trulyNewTweetIds.length,
           'truly new tweets'
         )
+        console.log('Truly new tweet IDs:', trulyNewTweetIds)
+        console.log('Previously processed tweet IDs:', notifications.processedTweetIds)
 
         if (trulyNewTweetIds.length > 0) {
           const allProcessedIds = [...notifications.processedTweetIds]
@@ -2767,13 +2779,18 @@ class TwitterTimeLimitService {
               )
 
               if (newTweet.created_at) {
+                // Parse Twitter's UTC timestamp correctly
                 const tweetCreatedAt = new Date(newTweet.created_at)
                 const now = new Date()
-                const timeDiffMinutes = (now - tweetCreatedAt) / (1000 * 60)
+                const nowUTC = new Date(now.getTime())
+                const tweetUTC = new Date(tweetCreatedAt.getTime())
+                const timeDiffMinutes = (nowUTC - tweetUTC) / (1000 * 60)
                 console.log(
                   'Tweet age:',
                   timeDiffMinutes.toFixed(2),
-                  'minutes (recent enough)'
+                  'minutes (recent enough)',
+                  'Tweet UTC:', tweetCreatedAt.toISOString(),
+                  'Now UTC:', now.toISOString()
                 )
               }
 
@@ -2786,13 +2803,18 @@ class TwitterTimeLimitService {
               console.log('Tweet filtered out or already processed - not showing notification for:', tweetId)
 
               if (newTweet.created_at) {
+                // Parse Twitter's UTC timestamp correctly
                 const tweetCreatedAt = new Date(newTweet.created_at)
                 const now = new Date()
-                const timeDiffMinutes = (now - tweetCreatedAt) / (1000 * 60)
+                const nowUTC = new Date(now.getTime())
+                const tweetUTC = new Date(tweetCreatedAt.getTime())
+                const timeDiffMinutes = (nowUTC - tweetUTC) / (1000 * 60)
                 console.log(
                   'Tweet age:',
                   timeDiffMinutes.toFixed(2),
-                  'minutes (too old, filtered, or already processed)'
+                  'minutes (too old, filtered, or already processed)',
+                  'Tweet UTC:', tweetCreatedAt.toISOString(),
+                  'Now UTC:', now.toISOString()
                 )
               }
             }
@@ -2903,9 +2925,15 @@ class TwitterTimeLimitService {
   shouldNotifyForTweet(tweet, filterType) {
     const isRetweet = tweet.full_text && tweet.full_text.startsWith('RT @')
 
+    // Parse Twitter's UTC timestamp correctly
     const tweetCreatedAt = new Date(tweet.created_at)
     const now = new Date()
-    const timeDiffMinutes = (now - tweetCreatedAt) / (1000 * 60)
+    
+    // Ensure we're comparing UTC times correctly
+    const nowUTC = new Date(now.getTime())
+    const tweetUTC = new Date(tweetCreatedAt.getTime())
+    
+    const timeDiffMinutes = (nowUTC - tweetUTC) / (1000 * 60)
     const isRecent = timeDiffMinutes <= 10
 
     console.log('Tweet filter check:', {
@@ -2917,6 +2945,10 @@ class TwitterTimeLimitService {
       filterType,
       isReply: !!tweet.in_reply_to_user_id_str,
       createdAt: tweet.created_at,
+      tweetUTC: tweetCreatedAt.toISOString(),
+      nowUTC: now.toISOString(),
+      userTimezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      timezoneOffset: now.getTimezoneOffset()
     })
 
     if (!isRecent) {
