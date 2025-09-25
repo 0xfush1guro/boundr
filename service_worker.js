@@ -1336,50 +1336,24 @@ class TwitterTimeLimitService {
               message.settings.dailyLimitMin !== undefined &&
               oldSettings.dailyLimitMin !== message.settings.dailyLimitMin
             ) {
-              const currentUsageMin = timekeeper.currentUsageMs / (1000 * 60)
-              const newLimitMin = message.settings.dailyLimitMin
+              console.log('📏 Daily limit changed - resetting counter to 0')
+              timekeeper.currentUsageMs = 0
+              timekeeper.isInitialized = true
+              timekeeper.isPaused = false
 
-              console.log('📏 Daily limit changed:', {
-                oldLimit: oldSettings.dailyLimitMin + 'm',
-                newLimit: newLimitMin + 'm',
-                currentUsage: Math.round(currentUsageMin * 10) / 10 + 'm',
-                currentUsageMs: timekeeper.currentUsageMs,
-                newLimitMs: newLimitMin * 60 * 1000,
-                exceedsNewLimit: currentUsageMin >= newLimitMin,
-              })
-
-              const newLimitMs = newLimitMin * 60 * 1000
-              const tickBuffer = 2000
-              if (timekeeper.currentUsageMs >= newLimitMs - tickBuffer) {
-                console.log(
-                  '⚡ Current usage exceeds new limit (with 2s buffer) - triggering lock immediately'
-                )
-                shouldLockImmediately = true
-
-                timekeeper.isLocked = true
-
-                console.log('⏹️ Stopping timekeeper due to new limit exceeded')
-                await timekeeper.stop()
-
-                const currentFlags = await storage.getFlags()
-                storageUpdates[STORAGE_KEYS.FLAGS] = {
-                  ...currentFlags,
-                  locked: true,
-                  frozenTimeUsed: newLimitMs,
-                }
-
-                console.log('📡 Broadcasting STATUS_CHANGED for immediate lock')
-                timekeeper.broadcastRealTimeUpdate({
-                  type: 'STATUS_CHANGED',
-                  locked: true,
-                  usage: timekeeper.currentUsageMs,
-                  timestamp: Date.now(),
-                })
-
-                console.log(
-                  '📦 Batching lock flags with settings update to avoid quota'
-                )
+              storageUpdates[STORAGE_KEYS.USAGE_TODAY] = {
+                millisActive: 0,
+                lastTickAt: Date.now(),
+                dateKey: new Date().toISOString().split('T')[0],
               }
+
+              console.log('💾 Storage usage reset to 0 for daily limit change')
+
+              timekeeper.broadcastRealTimeUpdate({
+                type: 'REAL_TIME_UPDATE',
+                usage: 0,
+                timestamp: Date.now(),
+              })
             }
 
             if (
