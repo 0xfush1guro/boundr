@@ -1,0 +1,333 @@
+/**
+ * Styles for Boundr overlay and toast notifications
+ */
+
+/* Toast notifications */
+.twitter-time-limit-toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: var(--bg, #ffffff);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  z-index: 10000;
+  max-width: 320px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  color: var(--fg, #0f172a);
+  animation: slideInRight 0.3s ease-out;
+}
+
+.twitter-time-limit-toast .toast-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.twitter-time-limit-toast .toast-title {
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--fg, #0f172a);
+}
+
+.twitter-time-limit-toast .toast-message {
+  color: var(--fg-secondary, #64748b);
+  line-height: 1.4;
+}
+
+.twitter-time-limit-toast .toast-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.twitter-time-limit-toast .toast-action {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--bg-secondary, #f8fafc);
+  color: var(--fg, #0f172a);
+  border: 1px solid var(--border, #e2e8f0);
+}
+
+.twitter-time-limit-toast .toast-action:hover {
+  background: var(--muted, #f1f5f9);
+}
+
+.twitter-time-limit-toast .toast-action:first-child {
+  background: #3b82f6;
+  color: #ffffff;
+  border-color: #3b82f6;
+}
+
+.twitter-time-limit-toast .toast-action:first-child:hover {
+  background: #2563eb;
+}
+
+/* Soft lock overlay */
+.twitter-time-limit-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(20px) saturate(180%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999999;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.twitter-time-limit-overlay .overlay-content {
+  background: rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 32px;
+  padding: 60px;
+  text-align: center;
+  max-width: 600px;
+  backdrop-filter: blur(16px) saturate(200%);
+  box-shadow: 0 32px 64px -12px rgba(0, 0, 0, 0.4), 
+              0 0 0 1px rgba(255, 255, 255, 0.1),
+              inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  animation: scaleIn 0.4s ease-out;
+}
+
+/* Dark mode support for overlay */
+.dark .twitter-time-limit-overlay .overlay-content {
+  background: rgba(31, 41, 55, 0.4);
+  border: 1px solid rgba(75, 85, 99, 0.3);
+  color: #f9fafb;
+  backdrop-filter: blur(16px) saturate(200%);
+  box-shadow: 0 32px 64px -12px rgba(0, 0, 0, 0.6), 
+              0 0 0 1px rgba(255, 255, 255, 0.05),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.twitter-time-limit-overlay .overlay-emoji {
+  font-size: 80px;
+  margin-bottom: 30px;
+  display: block;
+}
+
+.twitter-time-limit-overlay .overlay-image {
+  width: 280px;
+  height: 280px;
+  border-radius: 20px;
+  object-fit: cover;
+  margin: 0 auto 30px auto;
+  display: block;
+  border: 3px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2),
+              0 0 0 1px rgba(255, 255, 255, 0.1),
+              inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  /* Improve image quality rendering */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+  /* Fallback for better quality */
+  image-rendering: auto;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+/* Dark mode support for custom image */
+.dark .twitter-time-limit-overlay .overlay-image {
+  border: 3px solid rgba(75, 85, 99, 0.4);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4),
+              0 0 0 1px rgba(255, 255, 255, 0.05),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.twitter-time-limit-overlay .overlay-title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 12px;
+  color: var(--fg, #0f172a);
+  line-height: 1.2;
+}
+
+.twitter-time-limit-overlay .overlay-subtitle {
+  font-size: 18px;
+  color: var(--fg-secondary, #64748b);
+  margin-bottom: 32px;
+  line-height: 1.4;
+}
+
+.twitter-time-limit-overlay .overlay-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.twitter-time-limit-overlay .overlay-button {
+  padding: 16px 32px;
+  border-radius: 12px;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  min-width: 160px;
+}
+
+.twitter-time-limit-overlay .overlay-button-primary {
+  background: #3b82f6;
+  color: #ffffff;
+  box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.3);
+}
+
+.twitter-time-limit-overlay .overlay-button-primary:hover {
+  background: #2563eb;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px 0 rgba(59, 130, 246, 0.4);
+}
+
+.twitter-time-limit-overlay .overlay-button-secondary {
+  background: #f8fafc;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+}
+
+.twitter-time-limit-overlay .overlay-button-secondary:hover {
+  background: #f1f5f9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Dark mode button styles */
+.dark .twitter-time-limit-overlay .overlay-button-secondary {
+  background: #374151;
+  color: #d1d5db;
+  border: 1px solid #4b5563;
+}
+
+.dark .twitter-time-limit-overlay .overlay-button-secondary:hover {
+  background: #4b5563;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* Countdown specific styles */
+.twitter-time-limit-countdown .countdown-number {
+  font-weight: bold;
+  color: #ef4444;
+  font-size: 18px;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .twitter-time-limit-toast {
+    --bg: #1a1a1a;
+    --bg-secondary: #262626;
+    --fg: #ffffff;
+    --fg-secondary: #a3a3a3;
+    --muted: #404040;
+    --border: #262626;
+  }
+
+  .twitter-time-limit-overlay .overlay-content {
+    --bg: #1a1a1a;
+    --bg-secondary: #262626;
+    --fg: #ffffff;
+    --fg-secondary: #a3a3a3;
+    --muted: #404040;
+    --border: #262626;
+  }
+}
+
+/* Animations */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
+  .twitter-time-limit-overlay .overlay-content {
+    margin: 20px;
+    padding: 40px;
+    max-width: none;
+    border-radius: 24px;
+  }
+
+  .twitter-time-limit-overlay .overlay-title {
+    font-size: 24px;
+  }
+
+  .twitter-time-limit-overlay .overlay-subtitle {
+    font-size: 16px;
+  }
+
+  .twitter-time-limit-overlay .overlay-actions {
+    flex-direction: column;
+  }
+
+  .twitter-time-limit-overlay .overlay-button {
+    width: 100%;
+    padding: 14px 24px;
+    font-size: 15px;
+  }
+
+  .twitter-time-limit-overlay .overlay-image {
+    width: 200px;
+    height: 200px;
+    border-radius: 16px;
+    margin-bottom: 24px;
+    /* Improve image quality rendering on mobile */
+    image-rendering: auto;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+
+  .twitter-time-limit-overlay .overlay-emoji {
+    font-size: 48px;
+  }
+
+  .twitter-time-limit-toast {
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
+}

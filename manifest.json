@@ -1,0 +1,62 @@
+{
+  "manifest_version": 3,
+  "name": "Boundr",
+  "version": "1.0.0",
+  "description": "boundaries for your online activity",
+  
+  "permissions": [
+    "storage",
+    "tabs",
+    "notifications",
+    "alarms",
+    "scripting",
+    "idle",
+    "cookies"
+  ],
+  
+  "host_permissions": [
+    "*://twitter.com/*",
+    "*://x.com/*",
+    "*://pro.x.com/*"
+  ],
+  
+  "background": {
+    "service_worker": "service_worker.js"
+  },
+  
+  "action": {
+    "default_popup": "ui/popup.html",
+    "default_title": "Boundr",
+    "default_icon": {
+      "16": "assets/icon-16x16.png",
+      "32": "assets/icon-32x32.png",
+      "48": "assets/icon-48x48.png",
+      "128": "assets/icon-128x128.png"
+    }
+  },
+  
+  "options_page": "ui/options.html",
+  
+  "content_scripts": [
+    {
+      "matches": ["*://twitter.com/*", "*://x.com/*", "*://pro.x.com/*"],
+      "js": ["content/twitter_watch.js"],
+      "css": ["content/softlock_overlay.css"],
+      "run_at": "document_start"
+    }
+  ],
+  
+  "web_accessible_resources": [
+    {
+      "resources": ["content/softlock_overlay.js", "assets/*"],
+      "matches": ["*://twitter.com/*", "*://x.com/*", "*://pro.x.com/*"]
+    }
+  ],
+  
+  "icons": {
+    "16": "assets/icon-16x16.png",
+    "32": "assets/icon-32x32.png",
+    "48": "assets/icon-48x48.png",
+    "128": "assets/icon-128x128.png"
+  }
+}

@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Boundr - Options</title>
+    <link rel="stylesheet" href="styles/tailwind.css" />
+    <link rel="stylesheet" href="styles/components.css" />
+    <link rel="stylesheet" href="vendor/cropper.min.css" />
+    <style>
+      /* Light mode colors */
+      html:not(.dark) body,
+      html:not(.dark) .bg-gray-50 {
+        background-color: #c1c0b6 !important; /* Pastel color for light mode */
+      }
+
+      .light {
+        background-color: #c1c0b6 !important;
+        color: #111827 !important;
+      }
+      .light .text-gray-900 {
+        color: #111827 !important;
+      }
+      .light .text-gray-600 {
+        color: #4b5563 !important;
+      }
+      .light .text-gray-500 {
+        color: #6b7280 !important;
+      }
+      .light .text-gray-400 {
+        color: #9ca3af !important;
+      }
+      .light .text-gray-300 {
+        color: #d1d5db !important;
+      }
+      .light .text-gray-700 {
+        color: #374151 !important;
+      }
+
+      /* Dark mode colors - Modern consistent theme */
+      html.dark,
+      html.dark body {
+        background-color: #0f172a !important; /* slate-900 */
+      }
+
+      html.dark .bg-gray-50,
+      html.dark .dark\:bg-gray-900 {
+        background-color: #1e1e1b !important; /* Custom dark color */
+      }
+
+      html.dark .bg-white,
+      html.dark .dark\:bg-gray-800 {
+        background-color: #1e293b !important; /* slate-800 */
+      }
+
+      html.dark .text-gray-900,
+      html.dark .dark\:text-gray-100,
+      html.dark h1,
+      html.dark h2,
+      html.dark h3,
+      html.dark h4,
+      html.dark h5,
+      html.dark h6 {
+        color: #f1f5f9 !important; /* slate-100 */
+      }
+
+      html.dark .text-gray-600,
+      html.dark .dark\:text-gray-400,
+      html.dark label,
+      html.dark p {
+        color: #cbd5e1 !important; /* slate-300 */
+      }
+
+      html.dark .border-gray-100,
+      html.dark .dark\:border-gray-700 {
+        border-color: #334155 !important; /* slate-700 */
+      }
+
+      /* Override specific text colors in dark mode */
+      html.dark .text-gray-500,
+      html.dark .text-gray-400,
+      html.dark .text-gray-300 {
+        color: #94a3b8 !important; /* slate-400 */
+      }
+
+      /* Toast message colors - ensure visibility in both themes */
+      .message-toast {
+        color: white !important;
+      }
+      .light .message-toast {
+        color: white !important;
+      }
+      .dark .message-toast {
+        color: white !important;
+      }
+
+      /* Force toast text to be white regardless of theme */
+      .message-toast,
+      .message-toast * {
+        color: white !important;
+      }
+
+      /* Override any global text color rules for toasts */
+      html.light .message-toast,
+      html.dark .message-toast {
+        color: white !important;
+      }
+
+      /* Fix input field styling in dark mode */
+      html.dark input[type="number"],
+      html.dark input[type="text"],
+      html.dark input[type="time"] {
+        background-color: #374151 !important; /* gray-700 */
+        color: #f9fafb !important; /* gray-50 */
+        border-color: #4b5563 !important; /* gray-600 */
+      }
+
+      html.dark input[type="number"]:focus,
+      html.dark input[type="text"]:focus,
+      html.dark input[type="time"]:focus {
+        background-color: #374151 !important;
+        color: #f9fafb !important;
+        border-color: #3b82f6 !important; /* blue-500 */
+        outline: none !important;
+      }
+
+      /* Fix stepper buttons in dark mode */
+      html.dark .btn-ghost {
+        background-color: #374151 !important; /* gray-700 */
+        color: #f9fafb !important; /* gray-50 */
+        border-color: #4b5563 !important; /* gray-600 */
+      }
+
+      html.dark .btn-ghost:hover {
+        background-color: #4b5563 !important; /* gray-600 */
+        color: #ffffff !important;
+      }
+
+      /* Fix radio buttons in dark mode */
+      html.dark input[type="radio"] {
+        background-color: #374151 !important;
+        border-color: #4b5563 !important;
+      }
+
+      html.dark input[type="radio"]:checked {
+        background-color: #3b82f6 !important; /* blue-500 */
+        border-color: #3b82f6 !important;
+      }
+
+      /* Fix checkbox in dark mode */
+      html.dark input[type="checkbox"] {
+        background-color: #374151 !important;
+        border-color: #4b5563 !important;
+      }
+
+      html.dark input[type="checkbox"]:checked {
+        background-color: #3b82f6 !important;
+        border-color: #3b82f6 !important;
+      }
+
+      /* Cropper modal */
+      #cropper-modal { display: none; position: fixed; inset: 0; z-index: 9999; }
+      #cropper-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.6); }
+      #cropper-dialog { position: relative; width: 720px; max-width: 95vw; background: #fff; color: #111827; border-radius: 12px; margin: 6vh auto 0; box-shadow: 0 10px 25px rgba(0,0,0,0.2); overflow: hidden; }
+      html.dark #cropper-dialog { background: #1f2937; color: #e5e7eb; }
+      #cropper-header { padding: 12px 16px; font-weight: 600; border-bottom: 1px solid #e5e7eb; }
+      html.dark #cropper-header { border-color: #374151; }
+      #cropper-body { padding: 12px; }
+      #cropper-footer { padding: 12px 16px; display: flex; gap: 8px; justify-content: flex-end; border-top: 1px solid #e5e7eb; }
+      html.dark #cropper-footer { border-color: #374151; }
+      #cropper-canvas-wrap { width: 100%; height: 420px; background: #1118270d; position: relative; }
+      #cropper-img { max-width: none; max-height: none; min-width: 0; min-height: 0; display: block; width: 100%; height: 100%; }
+      #preview-img { max-width: 25%; max-height: 25%; object-fit: cover; }
+    </style>
+  </head>
+  <body
+    class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans min-h-screen transition-colors"
+  >
+    <div class="max-w-4xl mx-auto p-6">
+      <!-- Header -->
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold mb-2 text-gray-900 dark:text-gray-100">
+          Boundr
+        </h1>
+        <p class="text-gray-600 dark:text-gray-400">
+          boundaries for your online activity
+        </p>
+      </div>
+
+      <!-- Daily Limit Section -->
+      <div
+        class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-6 mb-6 transition-colors"
+      >
+        <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
+          Daily Limit
+        </h2>
+        <div class="space-y-4">
+          <div>
+            <label for="daily-limit" class="block text-sm font-medium mb-2">
+              Daily limit (HH:MM)
+            </label>
+            <div class="flex items-center gap-3">
+              <div class="flex items-center gap-2">
+                <input
+                  type="number"
+                  id="daily-limit-hours"
+                  min="0"
+                  max="23"
+                  class="input w-16 text-center"
+                  placeholder="0"
+                />
+                <span class="text-gray-500 dark:text-gray-400">:</span>
+                <input
+                  type="number"
+                  id="daily-limit-minutes"
+                  min="0"
+                  max="59"
+                  class="input w-16 text-center"
+                  placeholder="30"
+                />
+              </div>
+              <div class="flex gap-1">
+                <button id="limit-decrease" class="btn btn-ghost btn-sm">
+                  -
+                </button>
+                <button id="limit-increase" class="btn btn-ghost btn-sm">
+                  +
+                </button>
+              </div>
+            </div>
+            <p class="text-xs text-fg-secondary mt-1">
+              Set how much time you want to spend on Twitter each day
+              (hours:minutes)
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reset Time Section -->
+      <div class="card mb-6">
+        <h2 class="text-xl font-semibold mb-4">Reset Time</h2>
+        <div class="space-y-4">
+          <div>
+            <label for="reset-hour" class="block text-sm font-medium mb-2">
+              Reset time (local)
+            </label>
+            <input type="time" id="reset-hour" class="input w-32" />
+            <p class="text-xs text-fg-secondary mt-1">
+              Your daily limit resets at this time each day
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mode & Behavior Section -->
+      <div class="card mb-6">
+        <h2 class="text-xl font-semibold mb-4">Mode & Behavior</h2>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium mb-3"
+              >Action when limit reached</label
+            >
+            <div class="space-y-2">
+              <label class="flex items-center gap-3">
+                <input
+                  type="radio"
+                  name="mode"
+                  value="softlock"
+                  class="radio"
+                  checked
+                />
+                <div>
+                  <div class="font-medium">Soft Lock (Recommended)</div>
+                  <div class="text-sm text-fg-secondary">
+                    Show overlay that blocks the page
+                  </div>
+                </div>
+              </label>
+              <label class="flex items-center gap-3">
+                <input type="radio" name="mode" value="close" class="radio" />
+                <div>
+                  <div class="font-medium">Close Tab</div>
+                  <div class="text-sm text-fg-secondary">
+                    Automatically close Twitter tabs
+                  </div>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <input type="checkbox" id="allow-snooze" class="checkbox" checked />
+            <label for="allow-snooze" class="text-sm">
+              Allow one 5-minute snooze when nudged
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Theme Section -->
+      <div class="card mb-6">
+        <h2 class="text-xl font-semibold mb-4">Theme</h2>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium mb-3">Appearance</label>
+            <div class="space-y-2">
+              <label class="flex items-center gap-3">
+                <input type="radio" name="theme" value="light" class="radio" />
+                <div>
+                  <div class="font-medium">Light</div>
+                  <div class="text-sm text-fg-secondary">
+                    Always use light theme
+                  </div>
+                </div>
+              </label>
+              <label class="flex items-center gap-3">
+                <input type="radio" name="theme" value="dark" class="radio" />
+                <div>
+                  <div class="font-medium">Dark</div>
+                  <div class="text-sm text-fg-secondary">
+                    Always use dark theme
+                  </div>
+                </div>
+              </label>
+              <label class="flex items-center gap-3">
+                <input
+                  type="radio"
+                  name="theme"
+                  value="system"
+                  class="radio"
+                  checked
+                />
+                <div>
+                  <div class="font-medium">System</div>
+                  <div class="text-sm text-fg-secondary">
+                    Follow system preference
+                  </div>
+                </div>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tone Section -->
+      <div class="card mb-6">
+        <h2 class="text-xl font-semibold mb-4">Overlay</h2>
+        <div class="space-y-4">
+          <div>
+            <label for="tone-select" class="block text-sm font-medium mb-2">
+              Overlay Message
+            </label>
+            <select id="tone-select" class="select">
+              <option value="gentle">Gentle - "Let's call it a day 🫶"</option>
+              <option value="classic" selected>
+                Classic - "That's enough Twitter for today, mate."
+              </option>
+              <option value="drill">
+                Drill Sergeant - "Session terminated. Go touch grass."
+              </option>
+            </select>
+            <p class="text-xs text-fg-secondary mt-1">
+              Choose the tone of messages when your limit is reached
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Overlay Customization Section -->
+      <div class="card mb-6">
+        <h2 class="text-xl font-semibold mb-4">Overlay Customization</h2>
+        <div class="space-y-4">
+          <div class="flex items-center gap-3">
+            <input
+              type="checkbox"
+              id="enable-custom-overlay"
+              class="checkbox"
+            />
+            <label for="enable-custom-overlay" class="text-sm">
+              Enable custom overlay messages and images
+            </label>
+          </div>
+
+          <div
+            id="overlay-customization-options"
+            class="space-y-4"
+            style="display: none"
+          >
+            <!-- Template Selection -->
+            <div>
+              <label class="block text-sm font-medium mb-3"
+                >Choose a template</label
+              >
+              <div class="space-y-2">
+                <label class="flex items-center gap-3">
+                  <input
+                    type="radio"
+                    name="overlay-template"
+                    value="default"
+                    class="radio"
+                    checked
+                  />
+                  <div>
+                    <div class="font-medium">Default</div>
+                    <div class="text-sm text-fg-secondary">
+                      Use standard messages
+                    </div>
+                  </div>
+                </label>
+                <label class="flex items-center gap-3">
+                  <input
+                    type="radio"
+                    name="overlay-template"
+                    value="custom"
+                    class="radio"
+                  />
+                  <div>
+                    <div class="font-medium">Custom Message</div>
+                    <div class="text-sm text-fg-secondary">
+                      Write your own message
+                    </div>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Custom Message Input -->
+            <div id="custom-message-section" style="display: none">
+              <label
+                for="custom-message"
+                class="block text-sm font-medium mb-2"
+              >
+                Custom message
+              </label>
+              <textarea
+                id="custom-message"
+                placeholder="Enter your custom message..."
+                class="input w-full h-20 resize-none"
+                maxlength="200"
+              ></textarea>
+              <p class="text-xs text-fg-secondary mt-1">
+                Maximum 200 characters
+              </p>
+            </div>
+
+            <!-- Image Upload -->
+            <div>
+              <label for="overlay-image" class="block text-sm font-medium mb-2">
+                Custom image (optional)
+              </label>
+              <div class="flex gap-3 items-start">
+                <input
+                  type="file"
+                  id="overlay-image"
+                  accept="image/*"
+                  class="input flex-1"
+                />
+                <button
+                  id="clear-image"
+                  class="btn btn-ghost btn-sm"
+                  style="display: none"
+                >
+                  Clear
+                </button>
+              </div>
+              <p class="text-xs text-fg-secondary mt-1">
+                Upload a personal photo to display in the overlay (max 2MB, will
+                be automatically compressed to fit storage limits)
+              </p>
+
+              <!-- Image Preview -->
+              <div id="image-preview" class="mt-3" style="display: none">
+                <img id="preview-img" class="max-w-16 max-h-16 object-cover rounded-lg border border-gray-200 dark:border-gray-700" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bypass & Cooldown Section -->
+      <div class="card mb-6">
+        <h2 class="text-xl font-semibold mb-4">Bypass & Cooldown</h2>
+        <div class="space-y-4">
+          <div>
+            <label for="passcode" class="block text-sm font-medium mb-2">
+              Passcode (optional)
+            </label>
+            <div class="flex gap-2">
+              <input
+                type="password"
+                id="passcode"
+                placeholder="Enter passcode to bypass limit"
+                class="input flex-1"
+              />
+              <button id="set-passcode" class="btn btn-secondary">Set</button>
+            </div>
+            <p class="text-xs text-fg-secondary mt-1">
+              Set a passcode to bypass the limit in emergencies
+            </p>
+          </div>
+
+          <div>
+            <label
+              for="cooldown-minutes"
+              class="block text-sm font-medium mb-2"
+            >
+              Cooldown period (minutes)
+            </label>
+            <input
+              type="number"
+              id="cooldown-minutes"
+              min="1"
+              max="60"
+              class="input w-24"
+            />
+            <p class="text-xs text-fg-secondary mt-1">
+              How long to wait before allowing access again after cooldown
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notification Settings Section -->
+      <div class="card mb-6">
+        <h2 class="text-xl font-semibold mb-4">Notification Bell</h2>
+        <div class="space-y-4">
+          <div class="flex items-center gap-3">
+            <input type="checkbox" id="enable-notifications" class="checkbox" />
+            <label for="enable-notifications" class="text-sm">
+              Enable notifications for belled accounts
+            </label>
+          </div>
+          <p class="text-xs text-fg-secondary">
+            Get desktop notifications when accounts you've enabled notifications
+            for post new content.
+          </p>
+
+          <div
+            id="notification-settings"
+            class="space-y-4"
+            style="display: none"
+          >
+            <div>
+              <label class="block text-sm font-medium mb-2"
+                >Notification Filter</label
+              >
+              <div class="space-y-2">
+                <label class="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="notification-filter"
+                    value="posts"
+                    class="radio"
+                    checked
+                  />
+                  <span class="text-sm"
+                    >Posts only (no replies or retweets)</span
+                  >
+                </label>
+                <label class="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="notification-filter"
+                    value="posts_and_rts"
+                    class="radio"
+                  />
+                  <span class="text-sm">Posts and retweets (no replies)</span>
+                </label>
+                <label class="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="notification-filter"
+                    value="all"
+                    class="radio"
+                  />
+                  <span class="text-sm"
+                    >All content (posts, retweets, replies)</span
+                  >
+                </label>
+              </div>
+            </div>
+
+            <div>
+              <label
+                for="notification-interval"
+                class="block text-sm font-medium mb-2"
+              >
+                Check Interval (minutes)
+              </label>
+              <select id="notification-interval" class="input">
+                <option value="0.5">30 seconds</option>
+                <option value="1" selected>1 minute</option>
+                <option value="2">2 minutes</option>
+                <option value="5">5 minutes</option>
+                <option value="10">10 minutes</option>
+              </select>
+              <p class="text-xs text-fg-secondary mt-1">
+                How often to check for new notifications. More frequent checks
+                use more resources.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex gap-4">
+        <button id="save-settings" class="btn btn-primary">
+          Save Settings
+        </button>
+        <button id="reset-settings" class="btn btn-ghost">
+          Reset to Defaults
+        </button>
+      </div>
+
+      <!-- Footer -->
+      <div class="mt-8 pt-6 border-t border-border">
+        <div class="text-sm text-fg-secondary">
+          <p class="mb-2">
+            <strong>Permissions explained:</strong>
+          </p>
+          <ul class="space-y-1 text-xs">
+            <li>
+              • <strong>Storage:</strong> Save your settings and usage data
+            </li>
+            <li>
+              • <strong>Tabs:</strong> Monitor Twitter tabs and close them when
+              needed
+            </li>
+            <li>
+              • <strong>Notifications:</strong> Show gentle nudges when
+              approaching your limit
+            </li>
+            <li>
+              • <strong>Alarms:</strong> Schedule daily resets at your chosen
+              time
+            </li>
+            <li>
+              • <strong>Scripting:</strong> Inject overlay when limit is reached
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div id="cropper-modal">
+      <div id="cropper-backdrop"></div>
+      <div id="cropper-dialog">
+        <div id="cropper-header">Crop Image (1:1)</div>
+        <div id="cropper-body">
+          <div id="cropper-canvas-wrap">
+            <img id="cropper-img" />
+          </div>
+        </div>
+        <div id="cropper-footer">
+          <button id="cropper-cancel" class="btn btn-ghost">Cancel</button>
+          <button id="cropper-save" class="btn btn-primary">Crop & Save</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="vendor/cropper.min.js"></script>
+    <script src="options.js"></script>
+  </body>
+</html>

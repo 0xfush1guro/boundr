@@ -1,0 +1,30 @@
+{
+  "name": "twitter-time-limit",
+  "version": "1.0.0",
+  "description": "A Chrome extension to limit daily Twitter usage with gentle nudges and automatic blocking",
+  "main": "service_worker.js",
+  "scripts": {
+    "build": "echo 'No build process needed - extension is ready to load'",
+    "test": "echo 'Open generate-icons.html in browser to test icon generation'",
+    "lint": "echo 'Linting not configured - check files manually'"
+  },
+  "keywords": [
+    "chrome-extension",
+    "twitter",
+    "time-management",
+    "productivity",
+    "social-media"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/0xfush1guro/twitter-time-limit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/0xfush1guro/twitter-time-limit/issues"
+  },
+  "homepage": "https://github.com/0xfush1guro/twitter-time-limit#readme",
+  "devDependencies": {},
+  "dependencies": {}
+}
